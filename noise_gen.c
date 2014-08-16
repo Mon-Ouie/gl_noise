@@ -1,8 +1,8 @@
 #include "noise_gen.h"
-#include "noise_renderer.h"
 
-void single_cell(float *noise, size_t x, size_t y, size_t z) {
-  for (size_t i = 0; i < LevelWidth*LevelHeight*LevelDepth; i++)
+void single_cell(size_t width, size_t height, size_t depth, float *noise,
+                 size_t x, size_t y, size_t z) {
+  for (size_t i = 0; i < width*height*depth; i++)
     noise[i] = 0.0;
-  noise[x + y*LevelWidth + z*LevelWidth*LevelHeight] = 1.0;
+  noise[x + y*width + z*width*height] = 1.0;
 }

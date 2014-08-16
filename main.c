@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     goto fail_alloc_noise;
   }
 
-  single_cell(noise, 5, 5, 5);
+  single_cell(LevelWidth, LevelWidth, LevelHeight, noise, 5, 5, 5);
 
   noise_renderer prog;
   noise_renderer_init(&prog);

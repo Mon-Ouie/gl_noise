@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
-void single_cell(float *noise, size_t x, size_t y, size_t z);
+void single_cell(size_t width, size_t height, size_t depth, float *noise,
+                 size_t x, size_t y, size_t z);
 
 #endif
