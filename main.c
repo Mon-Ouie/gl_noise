@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <string.h>
 
 #include "noise_renderer.h"
 #include "noise_gen.h"
@@ -17,8 +19,12 @@
 
 #define AspectRatio ((float)ScreenWidth/ScreenHeight)
 
+static int has_option(int argc, char **argv, char *opt);
+
 int main(int argc, char **argv) {
   int status = 0;
+
+  srand(time(NULL));
 
   if (!glfwInit()) {
     fprintf(stderr, "Failed to initialize GLFW.\n");
@@ -47,7 +53,10 @@ int main(int argc, char **argv) {
     goto fail_alloc_noise;
   }
 
-  single_cell(LevelWidth, LevelWidth, LevelHeight, noise, 5, 5, 5);
+  if (has_option(argc, argv, "--test"))
+    single_cell(LevelWidth, LevelHeight, LevelDepth, noise, 5, 5, 5);
+  else
+    white_noise(LevelWidth, LevelHeight, LevelDepth, noise);
 
   noise_renderer prog;
   noise_renderer_init(&prog);
@@ -115,4 +124,13 @@ fail_generate_geometry: free(noise);
 fail_alloc_noise:       glfwDestroyWindow(window);
 fail_create_window:     glfwTerminate();
 fail_init_glfw:         return status;
+}
+
+static int has_option(int argc, char **argv, char *opt) {
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], opt) == 0)
+      return 1;
+  }
+
+  return 0;
 }
