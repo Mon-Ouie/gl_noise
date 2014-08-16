@@ -20,17 +20,33 @@
 int main(int argc, char **argv) {
   int status = 0;
 
-  glfwInit();
+  if (!glfwInit()) {
+    fprintf(stderr, "Failed to initialize GLFW.\n");
+    status = 1;
+    goto fail_init_glfw;
+  }
+
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
   GLFWwindow *window = glfwCreateWindow(ScreenWidth, ScreenHeight, "gl_noise",
                                         NULL, NULL);
+  if (!window) {
+    fprintf(stderr, "Failed to create a new window.\n");
+    status = 1;
+    goto fail_create_window;
+  }
   glfwMakeContextCurrent(window);
 
   glewInit();
 
   float *noise = malloc(sizeof(*noise)*LevelWidth*LevelHeight*LevelDepth);
+  if (!noise) {
+    fprintf(stderr, "Failed to create noise buffer.\n");
+    status = 1;
+    goto fail_alloc_noise;
+  }
+
   single_cell(noise, 5, 5, 5);
 
   noise_renderer prog;
@@ -39,6 +55,7 @@ int main(int argc, char **argv) {
   if (generate_geometry(&prog, noise) != 0) {
     fprintf(stderr, "An error occured while generating noise.\n");
     status = 1;
+    goto fail_generate_geometry;
   }
 
   glViewport(0, 0, ScreenWidth, ScreenHeight);
@@ -94,7 +111,8 @@ int main(int argc, char **argv) {
 
   noise_renderer_release(&prog);
 
-  glfwDestroyWindow(window);
-  glfwTerminate();
-  return status;
+fail_generate_geometry: free(noise);
+fail_alloc_noise:       glfwDestroyWindow(window);
+fail_create_window:     glfwTerminate();
+fail_init_glfw:         return status;
 }
