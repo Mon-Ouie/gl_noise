@@ -12,6 +12,7 @@ Supported options
 -----------------
 
 - `--debug`: Enables debug output from the GL implementation
+- `--fs`: Enables fullscreen mode.
 - `--test`: Just draw a single cube at a fixed location
 - `--white`: Generates white noise.
 - `--simplex`: Generates 3D simplex noise
