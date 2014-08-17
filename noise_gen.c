@@ -515,7 +515,6 @@ void perlin3d_like(size_t width, size_t height, size_t depth, GLfloat *noise,
   glUniform3f(glGetUniformLocation(prog, "start"), start.x, start.y, start.z);
   glUniform3f(glGetUniformLocation(prog, "scale"), scale.x, scale.y, scale.z);
   glUniform1i(glGetUniformLocation(prog, "octave_count"), octave_count);
-  glUniform1i(glGetUniformLocation(prog, "outTex"), 0);
 
   glDispatchCompute(width, height, depth);
   glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
