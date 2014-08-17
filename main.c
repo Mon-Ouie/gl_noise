@@ -21,6 +21,12 @@
 
 static int has_option(int argc, char **argv, char *opt);
 
+void gl_debug(GLenum source, GLenum type, GLuint id,
+              GLenum severity, GLsizei length,
+              const GLchar *message, void *user_param) {
+  fprintf(stderr, "[GL] %s\n", message);
+}
+
 int main(int argc, char **argv) {
   int status = 0;
 
@@ -35,6 +41,8 @@ int main(int argc, char **argv) {
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
+  if (has_option(argc, argv, "--debug"))
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
   GLFWwindow *window = glfwCreateWindow(ScreenWidth, ScreenHeight, "gl_noise",
                                         NULL, NULL);
   if (!window) {
@@ -42,9 +50,17 @@ int main(int argc, char **argv) {
     status = 1;
     goto fail_create_window;
   }
+
   glfwMakeContextCurrent(window);
 
   glewInit();
+
+  if (has_option(argc, argv, "--debug")) {
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE,
+                          0, 0, GL_TRUE);
+    glDebugMessageCallback(gl_debug, NULL);
+  }
 
   float *noise = malloc(sizeof(*noise)*LevelWidth*LevelHeight*LevelDepth);
   if (!noise) {
