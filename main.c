@@ -25,7 +25,7 @@
 
 #define AnimatedNoiseStart (vec4){0, 0, 0, 0}
 #define AnimatedNoiseScale (vec4){1.0/LevelWidth, 1.0/LevelHeight, \
-                                  1.0/LevelDepth, 0.01}
+                                  1.0/LevelDepth, 0.1}
 
 static int has_option(int argc, char **argv, char *opt);
 
