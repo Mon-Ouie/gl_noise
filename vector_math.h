@@ -20,6 +20,10 @@ vec3 vec3_mul(vec3 a, vec3 b);
 
 vec3 vec3_scale(GLfloat f, vec3 a);
 
+typedef struct vec4 {
+  GLfloat x, y, z, w;
+} vec4;
+
 typedef struct mat3 {
   GLfloat data[9];
 } mat3;

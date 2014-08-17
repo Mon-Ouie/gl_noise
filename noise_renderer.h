@@ -5,9 +5,9 @@
 #include <GL/glew.h>
 #include <stdint.h>
 
-#define LevelWidth  50
-#define LevelHeight 50
-#define LevelDepth  50
+#define LevelWidth  30
+#define LevelHeight 30
+#define LevelDepth  30
 
 #define MaxCubeCount   (1+LevelWidth*LevelHeight*LevelDepth)
 #define MaxSquareCount (MaxCubeCount*6)
@@ -57,7 +57,12 @@ typedef struct noise_renderer {
   } uniforms;
 } noise_renderer;
 
-void noise_renderer_init(noise_renderer *renderer);
+typedef enum noise_usage {
+  NoiseConstant,
+  NoiseAnimated,
+} noise_usage;
+
+void noise_renderer_init(noise_renderer *renderer, noise_usage usage);
 void noise_renderer_release(noise_renderer *renderer);
 
 /**

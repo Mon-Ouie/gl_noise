@@ -23,6 +23,10 @@
 #define NoiseScale (vec3){1.0/LevelWidth, 1.0/LevelHeight, 1.0/LevelDepth}
 #define OctaveCount 3
 
+#define AnimatedNoiseStart (vec4){0, 0, 0, 0}
+#define AnimatedNoiseScale (vec4){1.0/LevelWidth, 1.0/LevelHeight, \
+                                  1.0/LevelDepth, 0.01}
+
 static int has_option(int argc, char **argv, char *opt);
 
 void gl_debug(GLenum source, GLenum type, GLuint id,
@@ -73,6 +77,9 @@ int main(int argc, char **argv) {
     goto fail_alloc_noise;
   }
 
+  perlin4d_gen gen;
+  int animated = 0;
+
   if (has_option(argc, argv, "--test"))
     single_cell(LevelWidth, LevelHeight, LevelDepth, noise, 5, 5, 5);
   else if (has_option(argc, argv, "--white"))
@@ -80,12 +87,18 @@ int main(int argc, char **argv) {
   else if (has_option(argc, argv, "--simplex"))
     simplex3d(LevelWidth, LevelHeight, LevelDepth, noise,
               OctaveCount, NoiseStart, NoiseScale);
+  else if (has_option(argc, argv, "--perlin4d")) {
+    perlin4d_init(&gen, LevelWidth, LevelHeight, LevelDepth, OctaveCount,
+                  AnimatedNoiseStart, AnimatedNoiseScale);
+    perlin4d_slice(&gen, 0, noise);
+    animated = 1;
+  }
   else
     perlin3d(LevelWidth, LevelHeight, LevelDepth, noise,
              OctaveCount, NoiseStart, NoiseScale);
 
   noise_renderer prog;
-  noise_renderer_init(&prog);
+  noise_renderer_init(&prog, animated ? NoiseAnimated : NoiseConstant);
 
   if (generate_geometry(&prog, noise) != 0) {
     fprintf(stderr, "An error occured while generating noise.\n");
@@ -107,13 +120,22 @@ int main(int argc, char **argv) {
   camera_init(&camera, AspectRatio);
 
   float old_time = glfwGetTime();
-
+  float start_time = old_time;
   while (!glfwWindowShouldClose(window)) {
     set_mvp(&prog,
             Mat4Identity,
             camera_view(&camera),
             camera_projection(&camera));
     render(&prog);
+
+    if (animated) {
+      perlin4d_slice(&gen, glfwGetTime() - start_time, noise);
+      if (generate_geometry(&prog, noise) != 0) {
+        fprintf(stderr, "An error occured while generating noise.\n");
+        status = 1;
+        goto fail_generate_mid_loop;
+      }
+    }
 
     float new_time = glfwGetTime();
     float delta_t = (new_time - old_time);
@@ -144,8 +166,7 @@ int main(int argc, char **argv) {
     glfwPollEvents();
   }
 
-  noise_renderer_release(&prog);
-
+fail_generate_mid_loop: noise_renderer_release(&prog);
 fail_generate_geometry: free(noise);
 fail_alloc_noise:       glfwDestroyWindow(window);
 fail_create_window:     glfwTerminate();

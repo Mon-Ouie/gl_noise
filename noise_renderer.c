@@ -97,13 +97,14 @@ const char *src_main_fs = GLSL(
   }
 );
 
-void noise_renderer_init(noise_renderer *renderer) {
+void noise_renderer_init(noise_renderer *renderer, noise_usage usage) {
   glGenVertexArrays(1, &renderer->vao);
   glBindVertexArray(renderer->vao);
 
   glGenBuffers(1, &renderer->vbo);
   glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
-  glBufferData(GL_ARRAY_BUFFER, MaxVertexBufferSize, NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, MaxVertexBufferSize, NULL,
+               usage == NoiseConstant ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
@@ -118,7 +119,7 @@ void noise_renderer_init(noise_renderer *renderer) {
   glGenBuffers(1, &renderer->ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, MaxIndexBufferSize, NULL,
-               GL_STATIC_DRAW);
+               usage == NoiseConstant ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
