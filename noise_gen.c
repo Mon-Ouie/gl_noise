@@ -489,7 +489,7 @@ void perlin3d_like(size_t width, size_t height, size_t depth, GLfloat *noise,
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, shader_input);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                sizeof(gradients) + 2*sizeof(permutations),
-               NULL, GL_STATIC_READ);
+               NULL, GL_STATIC_COPY);
   glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(gradients), gradients);
   glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(gradients),
                   sizeof(permutations), permutations);
