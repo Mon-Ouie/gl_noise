@@ -14,11 +14,6 @@
 #define ScreenWidth  640
 #define ScreenHeight 480
 
-#define MidX (ScreenWidth/2)
-#define MidY (ScreenHeight/2)
-
-#define AspectRatio ((GLfloat)ScreenWidth/ScreenHeight)
-
 #define NoiseStart (vec3){0, 0, 0}
 #define NoiseScale (vec3){1.0/LevelWidth, 1.0/LevelHeight, 1.0/LevelDepth}
 #define OctaveCount 3
@@ -51,13 +46,32 @@ int main(int argc, char **argv) {
   glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
   if (has_option(argc, argv, "--debug"))
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-  GLFWwindow *window = glfwCreateWindow(ScreenWidth, ScreenHeight, "gl_noise",
-                                        NULL, NULL);
+
+  GLFWwindow *window = NULL;
+  if (has_option(argc, argv, "--fs")) {
+    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    int width, height;
+    glfwGetMonitorPhysicalSize(monitor, &width, &height);
+    window = glfwCreateWindow(width, height, "gl_noise", monitor, NULL);
+  }
+  else {
+    window = glfwCreateWindow(ScreenWidth, ScreenHeight, "gl_noise",
+                              NULL, NULL);
+  }
+
   if (!window) {
     fprintf(stderr, "Failed to create a new window.\n");
     status = 1;
     goto fail_create_window;
   }
+
+  int width, height;
+  glfwGetWindowSize(window, &width, &height);
+
+  float mid_x = width/2;
+  float mid_y = height/2;
+
+  float aspect_ratio = (float)width/height;
 
   glfwMakeContextCurrent(window);
 
@@ -106,10 +120,8 @@ int main(int argc, char **argv) {
     goto fail_generate_geometry;
   }
 
-  glViewport(0, 0, ScreenWidth, ScreenHeight);
-
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-  glfwSetCursorPos(window, MidX, MidY);
+  glfwSetCursorPos(window, mid_x, mid_y);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
@@ -117,7 +129,7 @@ int main(int argc, char **argv) {
   glEnable(GL_FRAMEBUFFER_SRGB);
 
   camera camera;
-  camera_init(&camera, AspectRatio);
+  camera_init(&camera, aspect_ratio);
 
   float old_time = glfwGetTime();
   float start_time = old_time;
@@ -143,10 +155,10 @@ int main(int argc, char **argv) {
 
     double mouse_x, mouse_y;
     glfwGetCursorPos(window, &mouse_x, &mouse_y);
-    glfwSetCursorPos(window, MidX, MidY);
+    glfwSetCursorPos(window, mid_x, mid_y);
     camera_reorient(&camera,
-                    CameraMouseSpeed*delta_t*(MidX - mouse_x),
-                    CameraMouseSpeed*delta_t*(MidY - mouse_y));
+                    CameraMouseSpeed*delta_t*(mid_x - mouse_x),
+                    CameraMouseSpeed*delta_t*(mid_y - mouse_y));
 
     float distance = CameraMoveSpeed * delta_t;
     float forward = 0, right = 0, up = 0;
