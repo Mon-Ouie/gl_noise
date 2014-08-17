@@ -15,7 +15,7 @@
 #define MaxIndexCount  (MaxSquareCount*6)
 
 #define MaxVertexBufferSize (MaxVertexCount * sizeof(vertex))
-#define MaxIndexBufferSize  (MaxIndexCount  * sizeof(GLushort))
+#define MaxIndexBufferSize  (MaxIndexCount  * sizeof(GLuint))
 
 #define DensityThreshold 0.5
 

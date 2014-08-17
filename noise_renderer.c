@@ -190,7 +190,7 @@ void noise_renderer_release(noise_renderer *renderer) {
 
 static
 void generate_square(size_t *index_count, size_t *vertex_count,
-                     GLushort *indices, vertex *vertices,
+                     GLuint *indices, vertex *vertices,
                      float ax, float ay, float az,
                      float bx, float by, float bz,
                      float cx, float cy, float cz,
@@ -201,7 +201,7 @@ void generate_square(size_t *index_count, size_t *vertex_count,
 int generate_geometry(noise_renderer *renderer, float *noise) {
   int status = 0;
 
-  GLushort *indices = malloc(MaxIndexBufferSize);
+  GLuint *indices = malloc(MaxIndexBufferSize);
   if (!indices) {
     status = -1;
     goto fail_alloc_indices;
@@ -346,7 +346,6 @@ int generate_geometry(noise_renderer *renderer, float *noise) {
     }
   }
 
-
   glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
   glBufferSubData(GL_ARRAY_BUFFER, 0, vertex_count * sizeof(vertex),
                   vertices);
@@ -354,7 +353,7 @@ int generate_geometry(noise_renderer *renderer, float *noise) {
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->ibo);
   glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0,
-                  renderer->index_count * sizeof(GLushort), indices);
+                  renderer->index_count * sizeof(GLuint), indices);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
                      free(vertices);
@@ -367,8 +366,8 @@ void render(const noise_renderer *renderer) {
 
   glBindVertexArray(renderer->vao);
   glUseProgram(renderer->prog);
-  glDrawElements(GL_TRIANGLES, renderer->index_count, GL_UNSIGNED_SHORT,
-                 (void*)0);
+  glDrawElements(GL_TRIANGLES, renderer->index_count, GL_UNSIGNED_INT,
+                 NULL);
   glUseProgram(0);
   glBindVertexArray(0);
 }
@@ -392,7 +391,7 @@ void set_mvp(noise_renderer *renderer,
 
 static
 void generate_square(size_t *index_count, size_t *vertex_count,
-                     GLushort *indices, vertex *vertices,
+                     GLuint *indices, vertex *vertices,
                      float ax, float ay, float az,
                      float bx, float by, float bz,
                      float cx, float cy, float cz,
