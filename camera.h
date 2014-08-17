@@ -4,7 +4,7 @@
 #include "vector_math.h"
 
 #define CameraMouseSpeed 0.1 /* rad/sec */
-#define CameraMoveSpeed  5.0 /* units per second, for each dimension */
+#define CameraMoveSpeed  10.0 /* units per second, for each dimension */
 
 typedef struct camera {
   vec3 eye;
