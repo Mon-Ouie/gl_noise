@@ -77,9 +77,12 @@ int main(int argc, char **argv) {
     single_cell(LevelWidth, LevelHeight, LevelDepth, noise, 5, 5, 5);
   else if (has_option(argc, argv, "--white"))
     white_noise(LevelWidth, LevelHeight, LevelDepth, noise);
+  else if (has_option(argc, argv, "--simplex"))
+    simplex3d(LevelWidth, LevelHeight, LevelDepth, noise,
+              OctaveCount, NoiseStart, NoiseScale);
   else
     perlin3d(LevelWidth, LevelHeight, LevelDepth, noise,
-              OctaveCount, NoiseStart, NoiseScale);
+             OctaveCount, NoiseStart, NoiseScale);
 
   noise_renderer prog;
   noise_renderer_init(&prog);

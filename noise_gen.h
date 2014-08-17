@@ -9,5 +9,7 @@ void single_cell(size_t width, size_t height, size_t depth, float *noise,
 void white_noise(size_t width, size_t height, size_t depth, float *noise);
 void perlin3d(size_t width, size_t height, size_t depth, float *noise,
                size_t octave_count, vec3 start, vec3 scale);
+void simplex3d(size_t width, size_t height, size_t depth, float *noise,
+               size_t octave_count, vec3 start, vec3 scale);
 
 #endif
