@@ -3,7 +3,7 @@ OBJS = main.o \
 	camera.o noise_gen.o noise_renderer.o shader_utils.o vector_math.o
 HEADERS = camera.h noise_gen.h noise_renderer.h shader_utils.h vector_math.h
 
-CFLAGS += -std=c99 -Wall -Wextra -pedantic
+CFLAGS += -std=c99 -Wall -Wextra -pedantic -Wno-unused-parameter
 LDLIBS += -lm -lGLEW -lGL -lglfw
 
 .PHONY: all clean
