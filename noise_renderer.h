@@ -5,9 +5,9 @@
 #include <GL/glew.h>
 #include <stdint.h>
 
-#define LevelWidth  10
-#define LevelHeight 10
-#define LevelDepth  10
+#define LevelWidth  50
+#define LevelHeight 50
+#define LevelDepth  50
 
 #define MaxCubeCount   (1+LevelWidth*LevelHeight*LevelDepth)
 #define MaxSquareCount (MaxCubeCount*6)
