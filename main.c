@@ -17,7 +17,7 @@
 #define MidX (ScreenWidth/2)
 #define MidY (ScreenHeight/2)
 
-#define AspectRatio ((float)ScreenWidth/ScreenHeight)
+#define AspectRatio ((GLfloat)ScreenWidth/ScreenHeight)
 
 #define NoiseStart (vec3){0, 0, 0}
 #define NoiseScale (vec3){1.0/LevelWidth, 1.0/LevelHeight, 1.0/LevelDepth}
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     glDebugMessageCallback(gl_debug, NULL);
   }
 
-  float *noise = malloc(sizeof(*noise)*LevelWidth*LevelHeight*LevelDepth);
+  GLfloat *noise = malloc(sizeof(*noise)*LevelWidth*LevelHeight*LevelDepth);
   if (!noise) {
     fprintf(stderr, "Failed to create noise buffer.\n");
     status = 1;

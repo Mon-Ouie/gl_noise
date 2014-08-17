@@ -191,14 +191,14 @@ void noise_renderer_release(noise_renderer *renderer) {
 static
 void generate_square(size_t *index_count, size_t *vertex_count,
                      GLuint *indices, vertex *vertices,
-                     float ax, float ay, float az,
-                     float bx, float by, float bz,
-                     float cx, float cy, float cz,
-                     float dx, float dy, float dz,
-                     float nx, float ny, float nz,
-                     uint8_t r, uint8_t g, uint8_t b);
+                     GLfloat ax, GLfloat ay, GLfloat az,
+                     GLfloat bx, GLfloat by, GLfloat bz,
+                     GLfloat cx, GLfloat cy, GLfloat cz,
+                     GLfloat dx, GLfloat dy, GLfloat dz,
+                     GLfloat nx, GLfloat ny, GLfloat nz,
+                     GLubyte r, GLubyte g, GLubyte b);
 
-int generate_geometry(noise_renderer *renderer, float *noise) {
+int generate_geometry(noise_renderer *renderer, GLfloat *noise) {
   int status = 0;
 
   GLuint *indices = malloc(MaxIndexBufferSize);
@@ -392,12 +392,12 @@ void set_mvp(noise_renderer *renderer,
 static
 void generate_square(size_t *index_count, size_t *vertex_count,
                      GLuint *indices, vertex *vertices,
-                     float ax, float ay, float az,
-                     float bx, float by, float bz,
-                     float cx, float cy, float cz,
-                     float dx, float dy, float dz,
-                     float nx, float ny, float nz,
-                     uint8_t r, uint8_t g, uint8_t b) {
+                     GLfloat ax, GLfloat ay, GLfloat az,
+                     GLfloat bx, GLfloat by, GLfloat bz,
+                     GLfloat cx, GLfloat cy, GLfloat cz,
+                     GLfloat dx, GLfloat dy, GLfloat dz,
+                     GLfloat nx, GLfloat ny, GLfloat nz,
+                     GLubyte r, GLubyte g, GLubyte b) {
   vec3 va = {ax, ay, az};
   vec3 vb = {bx, by, bz};
   vec3 vc = {cx, cy, cz};

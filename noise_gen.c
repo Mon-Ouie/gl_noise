@@ -13,20 +13,20 @@ static void shuffle(GLint *array, size_t n);
   "#version 430\n" \
   #code
 
-void single_cell(size_t width, size_t height, size_t depth, float *noise,
+void single_cell(size_t width, size_t height, size_t depth, GLfloat *noise,
                  size_t x, size_t y, size_t z) {
   for (size_t i = 0; i < width*height*depth; i++)
     noise[i] = 0.0;
   noise[x + y*width + z*width*height] = 1.0;
 }
 
-void white_noise(size_t width, size_t height, size_t depth, float *noise) {
+void white_noise(size_t width, size_t height, size_t depth, GLfloat *noise) {
   for (size_t i = 0; i < width*height*depth; i++)
-    noise[i] = (float)rand()/RAND_MAX;
+    noise[i] = (GLfloat)rand()/RAND_MAX;
 }
 
 static
-void perlin3d_like(size_t width, size_t height, size_t depth, float *noise,
+void perlin3d_like(size_t width, size_t height, size_t depth, GLfloat *noise,
                    size_t octave_count, vec3 start, vec3 scale,
                    const char *src);
 
@@ -41,7 +41,7 @@ static const char *src_perlin3d = GLSL(
   /* Couldn't get this to work using an image3D, not sure what I was doing
    * wrong.  */
   layout(std430, binding = 1) buffer outBuf {
-    float data[];
+    GLfloat data[];
   };
 
   uniform ivec3 size;
@@ -118,7 +118,7 @@ static const char *src_perlin3d = GLSL(
   }
 );
 
-void perlin3d(size_t width, size_t height, size_t depth, float *noise,
+void perlin3d(size_t width, size_t height, size_t depth, GLfloat *noise,
                size_t octave_count, vec3 start, vec3 scale) {
   perlin3d_like(width, height, depth, noise, octave_count, start, scale,
                 src_perlin3d);
@@ -247,7 +247,7 @@ static const char *src_simplex3d = GLSL(
   }
 );
 
-void simplex3d(size_t width, size_t height, size_t depth, float *noise,
+void simplex3d(size_t width, size_t height, size_t depth, GLfloat *noise,
                size_t octave_count, vec3 start, vec3 scale) {
   perlin3d_like(width, height, depth, noise, octave_count, start, scale,
                 src_simplex3d);
@@ -255,7 +255,7 @@ void simplex3d(size_t width, size_t height, size_t depth, float *noise,
 
 #define PermutationTableSize 256
 
-const float gradients[] = {
+const GLfloat gradients[] = {
    1,  1,  0,
   -1,  1,  0,
    1, -1,  0,
@@ -271,7 +271,7 @@ const float gradients[] = {
 };
 
 static
-void perlin3d_like(size_t width, size_t height, size_t depth, float *noise,
+void perlin3d_like(size_t width, size_t height, size_t depth, GLfloat *noise,
                    size_t octave_count, vec3 start, vec3 scale,
                    const char *src) {
   GLint permutations[PermutationTableSize];
@@ -293,7 +293,7 @@ void perlin3d_like(size_t width, size_t height, size_t depth, float *noise,
   GLuint shader_output;
   glGenBuffers(1, &shader_output);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, shader_output);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float)*width*height*depth,
+  glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLfloat)*width*height*depth,
                NULL, GL_STREAM_READ);
 
   GLuint shader = create_shader(GL_COMPUTE_SHADER, src);
@@ -313,7 +313,7 @@ void perlin3d_like(size_t width, size_t height, size_t depth, float *noise,
   glDispatchCompute(width, height, depth);
   glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
   glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
-                     sizeof(float)*width*height*depth, noise);
+                     sizeof(GLfloat)*width*height*depth, noise);
   glUseProgram(0);
 
   glDeleteProgram(prog);

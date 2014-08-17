@@ -20,7 +20,7 @@
 #define DensityThreshold 0.5
 
 typedef struct color {
-  uint8_t r, g, b;
+  GLubyte r, g, b;
 } color;
 
 typedef struct vertex {
@@ -64,7 +64,7 @@ void noise_renderer_release(noise_renderer *renderer);
  * Generates one cube for every element in the noise buffer with a value above
  * the DensityThreshold, as well as a box around the whole scene.
  */
-int generate_geometry(noise_renderer *renderer, float *noise);
+int generate_geometry(noise_renderer *renderer, GLfloat *noise);
 
 void render(const noise_renderer *renderer);
 void set_mvp(noise_renderer *renderer,
