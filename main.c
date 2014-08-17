@@ -19,6 +19,10 @@
 
 #define AspectRatio ((float)ScreenWidth/ScreenHeight)
 
+#define NoiseStart (vec3){0, 0, 0}
+#define NoiseScale (vec3){1.0/LevelWidth, 1.0/LevelHeight, 1.0/LevelDepth}
+#define OctaveCount 3
+
 static int has_option(int argc, char **argv, char *opt);
 
 void gl_debug(GLenum source, GLenum type, GLuint id,
@@ -71,8 +75,11 @@ int main(int argc, char **argv) {
 
   if (has_option(argc, argv, "--test"))
     single_cell(LevelWidth, LevelHeight, LevelDepth, noise, 5, 5, 5);
-  else
+  else if (has_option(argc, argv, "--white"))
     white_noise(LevelWidth, LevelHeight, LevelDepth, noise);
+  else
+    perlin3d(LevelWidth, LevelHeight, LevelDepth, noise,
+              OctaveCount, NoiseStart, NoiseScale);
 
   noise_renderer prog;
   noise_renderer_init(&prog);
